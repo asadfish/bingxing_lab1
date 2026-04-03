@@ -3,15 +3,17 @@
 #include <iomanip>
 using namespace std;
 
-int N, M;
+const int N = 500;
+const int M = 10000000;
+
+// 重复1000次比较时间
 int REPEAT = 1000;
 
-// 动态数组
-int **A;
-int *B;
-long long *ans1;
-long long *ans2;
-int *arr;
+int A[N][N];
+int B[N];
+long long ans1[N];
+long long ans2[N];
+int arr[M];
 
 // 生成矩阵
 void Matrix() {
@@ -36,7 +38,7 @@ void Array() {
     }
 }
 
-// 问题1：平凡算法
+// 问题1：平凡
 void Ordinary1(long long res[]) {
     for (int j = 0; j < N; j++) {
         res[j] = 0;
@@ -62,7 +64,7 @@ void Better1(long long res[]) {
     }
 }
 
-// 问题2：平凡算法
+// 问题2：平凡
 long long Ordinary2() {
     long long sum = 0;
     for (int i = 0; i < M; i++) {
@@ -71,7 +73,7 @@ long long Ordinary2() {
     return sum;
 }
 
-// 问题2：优化算法
+// 问题2：优化
 long long Better2() {
     long long sum1 = 0, sum2 = 0;
     int i;
@@ -93,51 +95,33 @@ bool check(long long a[], long long b[]) {
 }
 
 int main() {
-    cout << "Input N and M: ";
-    cin >> N >> M;
-
-    // 动态申请矩阵 A
-    A = new int*[N];
-    for (int i = 0; i < N; i++) {
-        A[i] = new int[N];
-    }
-
-    // 动态申请其他数组
-    B = new int[N];
-    ans1 = new long long[N];
-    ans2 = new long long[N];
-    arr = new int[M];
-
     Matrix();
     Vector();
     Array();
 
-    // 正确性检查
     Ordinary1(ans1);
     Better1(ans2);
 
     long long s1 = Ordinary2();
     long long s2 = Better2();
 
-    cout << "Correctness check:" << endl;
-    cout << "Q1 results same: ";
+    cout << "正确性检查：" << endl;
+    cout << "矩阵内积结果是否一致：";
     if (check(ans1, ans2)) cout << "Yes" << endl;
     else cout << "No" << endl;
 
-    cout << "Q2 results same: ";
+    cout << "求和结果是否一致：";
     if (s1 == s2) cout << "Yes" << endl;
     else cout << "No" << endl;
 
     cout << endl;
-    cout << "First 5 results of Q1:" << endl;
-    for (int i = 0; i < 5 && i < N; i++) {
+    cout << "（测试）矩阵内积前5项结果：" << endl;
+    for (int i = 0; i < 5; i++) {
         cout << ans1[i] << " ";
     }
     cout << endl;
+    cout << "求和结果：" << s1 << endl;
 
-    cout << "Sum result: " << s1 << endl;
-
-    // 测试Q1平凡算法时间
     clock_t start1 = clock();
     for (int k = 0; k < REPEAT; k++) {
         Ordinary1(ans1);
@@ -145,7 +129,6 @@ int main() {
     clock_t end1 = clock();
     double time1 = (double)(end1 - start1) / CLOCKS_PER_SEC;
 
-    // 测试Q1优化算法时间
     clock_t start2 = clock();
     for (int k = 0; k < REPEAT; k++) {
         Better1(ans2);
@@ -153,7 +136,6 @@ int main() {
     clock_t end2 = clock();
     double time2 = (double)(end2 - start2) / CLOCKS_PER_SEC;
 
-    // 测试Q2平凡算法时间
     clock_t start3 = clock();
     long long temp1 = 0;
     for (int k = 0; k < REPEAT; k++) {
@@ -162,7 +144,6 @@ int main() {
     clock_t end3 = clock();
     double time3 = (double)(end3 - start3) / CLOCKS_PER_SEC;
 
-    // 测试Q2优化算法时间
     clock_t start4 = clock();
     long long temp2 = 0;
     for (int k = 0; k < REPEAT; k++) {
@@ -172,25 +153,15 @@ int main() {
     double time4 = (double)(end4 - start4) / CLOCKS_PER_SEC;
 
     cout << endl;
-    cout << "Sum test values: " << temp1 << " " << temp2 << endl;
+    cout << "求和测试结果：" << temp1 << " " << temp2 << endl;
 
     cout << fixed << setprecision(6);
     cout << endl;
-    cout << "Test results:" << endl;
-    cout << "Q1 ordinary time: " << time1 << " s" << endl;
-    cout << "Q1 optimized time: " << time2 << " s" << endl;
-    cout << "Q2 ordinary time: " << time3 << " s" << endl;
-    cout << "Q2 optimized time: " << time4 << " s" << endl;
-
-    // 释放内存
-    for (int i = 0; i < N; i++) {
-        delete[] A[i];
-    }
-    delete[] A;
-    delete[] B;
-    delete[] ans1;
-    delete[] ans2;
-    delete[] arr;
+    cout << "测试结果：" << endl;
+    cout << "Q1平凡算法时间： " << time1 << " s" << endl;
+    cout << "Q1优化算法时间： " << time2 << " s" << endl;
+    cout << "Q2平凡算法时间： " << time3 << " s" << endl;
+    cout << "Q2优化算法时间： " << time4 << " s" << endl;
 
     return 0;
 }
